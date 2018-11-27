@@ -22,8 +22,8 @@ static void test(void)
 {
     TE_init();
 
-    //TE_Task task = { taskFn,  };
-    //TE_exe(&task);
+    TE_Ctx ctx = { 0 };
+    TE_exe(taskFn, &ctx);
 
     TE_deinit();
 }
