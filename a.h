@@ -12,6 +12,10 @@
 
 
 
+#include <atomic.h>
+
+
+
 #ifdef __EMSCRIPTEN__
 # define HAVE_PTHREAD
 # define HAVE_TIMESPEC_GET

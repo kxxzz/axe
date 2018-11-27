@@ -29,16 +29,15 @@ void TE_deinit(void);
 
 
 
-typedef void(*TE_TaskFn)(struct TE_Task* task);
+typedef void(*TE_TaskFn)(void* ctx);
 
-typedef struct TE_Task
+typedef struct TE_Ctx
 {
-    TE_TaskFn fn;
-    void* ctx;
+    void* data;
     int64_t done;
-} TE_Task;
+} TE_Ctx;
 
-void TE_exe(TE_Task* task);
+void TE_exe(TE_TaskFn fn, TE_Ctx* ctx);
 
 
 
