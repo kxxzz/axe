@@ -31,7 +31,7 @@ typedef struct TE_Task
 {
     TE_TaskFn fn;
     void* ctx;
-    uint64_t done;
+    int64_t done;
 } TE_Task;
 
 void TE_exe(TE_Task* task);

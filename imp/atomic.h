@@ -12,21 +12,21 @@
 #endif
 
 
-static int64_t atomic_set(int64_t *ptr, const int value)
+static int64_t atomic_set(int64_t* p, const int v)
 {
-    return __sync_lock_test_and_set(ptr, value);
+    return __sync_lock_test_and_set(p, v);
 }
-static int64_t atomic_get(int64_t *ptr)
+static int64_t atomic_get(int64_t* p)
 {
-    return __sync_add_and_fetch(ptr, 0);
+    return __sync_add_and_fetch(p, 0);
 }
-static int64_t atomic_inc(int64_t *ptr)
+static int64_t atomic_inc(int64_t* p)
 {
-    return __sync_add_and_fetch(ptr, +1);
+    return __sync_add_and_fetch(p, +1);
 }
-static int64_t atomic_dec(int64_t *ptr)
+static int64_t atomic_dec(int64_t* p)
 {
-    return __sync_add_and_fetch(ptr, -1);
+    return __sync_add_and_fetch(p, -1);
 }
 
 
