@@ -25,6 +25,16 @@ typedef double f64;
 
 
 
+typedef void(*TE_TaskFn)(struct TE_Task* task);
+
+typedef struct TE_Task
+{
+    TE_TaskFn fn;
+    void* ctx;
+    uint64_t done;
+} TE_Task;
+
+void TE_addTask(TE_Task* task);
 
 
 

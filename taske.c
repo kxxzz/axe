@@ -3,20 +3,12 @@
 
 
 
-void* zalloc(size_t size)
+
+
+void TE_addTask(TE_Task* task)
 {
-    void* p = malloc(size);
-    memset(p, 0, size);
-    return p;
+
 }
-
-
-
-
-
-
-
-
 
 
 
