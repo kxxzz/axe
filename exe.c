@@ -5,7 +5,7 @@
 
 
 
-void TE_addTask(TE_Task* task)
+void TE_exe(TE_Task* task)
 {
 
 }

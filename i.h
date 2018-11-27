@@ -34,7 +34,7 @@ typedef struct TE_Task
     uint64_t done;
 } TE_Task;
 
-void TE_addTask(TE_Task* task);
+void TE_exe(TE_Task* task);
 
 
 
