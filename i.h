@@ -24,6 +24,10 @@ typedef double f64;
 
 
 
+void TE_init(void);
+void TE_deinit(void);
+
+
 
 typedef void(*TE_TaskFn)(struct TE_Task* task);
 
