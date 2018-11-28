@@ -12,7 +12,8 @@ enum
 typedef struct TE_ThrdTask
 {
     TE_TaskFn fn;
-    TE_Ctx* ctx;
+    void* ctx;
+    int64_t* done;
 } TE_ThrdTask;
 
 
@@ -51,12 +52,13 @@ static s32 TE_thrdPool_worker(TE_ThrdPool* pool)
 
             task.fn = pool->queue[pool->head].fn;
             task.ctx = pool->queue[pool->head].ctx;
+            task.done  = pool->queue[pool->head].done;
             pool->head = (pool->head + 1) % TE_ThrdPool_QueueSize;
         }
         mtx_unlock(&pool->lock);
 
-        task.fn(task.ctx->data);
-        atomic_set(&task.ctx->done, 1);
+        task.fn(task.ctx);
+        atomic_set(task.done, 1);
     }
     return thrd_success;
 }
@@ -138,7 +140,7 @@ void TE_thrdPool_free(TE_ThrdPool* pool)
 
 
 
-void TE_thrdPool_add(TE_ThrdPool* pool, TE_TaskFn fn, TE_Ctx* ctx)
+void TE_thrdPool_add(TE_ThrdPool* pool, TE_TaskFn fn, void* ctx, int64_t* done)
 {
     mtx_lock(&pool->lock);
 
@@ -154,6 +156,7 @@ void TE_thrdPool_add(TE_ThrdPool* pool, TE_TaskFn fn, TE_Ctx* ctx)
 
     pool->queue[pool->tail].fn = fn;
     pool->queue[pool->tail].ctx = ctx;
+    pool->queue[pool->tail].done = done;
     pool->tail = (pool->tail + 1) % TE_ThrdPool_QueueSize;
 
     cnd_signal(&pool->notify);

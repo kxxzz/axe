@@ -23,6 +23,10 @@ typedef double f64;
 
 
 
+#define ARYLEN(a) (sizeof(a) / sizeof((a)[0]))
+
+
+
 
 void TE_init(void);
 void TE_deinit(void);
@@ -31,13 +35,7 @@ void TE_deinit(void);
 
 typedef void(*TE_TaskFn)(void* ctx);
 
-typedef struct TE_Ctx
-{
-    void* data;
-    int64_t done;
-} TE_Ctx;
-
-void TE_exe(TE_TaskFn fn, TE_Ctx* ctx);
+void TE_exe(TE_TaskFn fn, void* ctx, int64_t* done);
 
 
 
