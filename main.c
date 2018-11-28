@@ -14,14 +14,17 @@
 #include "i.h"
 
 
-
+enum
+{
+    TaskCount = 1024 - 1,
+};
 static int64_t s_count = 0;
 
 
 void taskFn(void* ctx)
 {
     atomic_inc(&s_count);
-    if (1023 == s_count)
+    if (TaskCount == s_count)
     {
         printf("done\n");
     }
@@ -30,7 +33,7 @@ void taskFn(void* ctx)
 static void test(void)
 {
     TE_init();
-    static int64_t done[1023] = { 0 };
+    static int64_t done[TaskCount] = { 0 };
     for (u32 i = 0; i < ARYLEN(done); ++i)
     {
         bool ok = TE_exe(taskFn, NULL, done + i);
