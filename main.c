@@ -22,7 +22,7 @@ static int64_t s_count = 0;
 void taskFn(void* ctx)
 {
     atomic_inc(&s_count);
-    if (1024 == s_count)
+    if (1023 == s_count)
     {
         printf("done\n");
     }
@@ -31,8 +31,7 @@ void taskFn(void* ctx)
 static void test(void)
 {
     TE_init();
-    sleep_ms(100);
-    static int64_t done[1024] = { 0 };
+    static int64_t done[1023] = { 0 };
     for (u32 i = 0; i < ARYLEN(done); ++i)
     {
         TE_exe(taskFn, NULL, done + i);
