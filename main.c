@@ -15,7 +15,6 @@
 
 
 
-
 static int64_t s_count = 0;
 
 
@@ -34,7 +33,8 @@ static void test(void)
     static int64_t done[1023] = { 0 };
     for (u32 i = 0; i < ARYLEN(done); ++i)
     {
-        TE_exe(taskFn, NULL, done + i);
+        bool ok = TE_exe(taskFn, NULL, done + i);
+        assert(ok);
     }
     while (atomic_get(&s_count) < ARYLEN(done));
     TE_deinit();

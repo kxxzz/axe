@@ -35,7 +35,7 @@ void TE_deinit(void);
 
 typedef void(*TE_TaskFn)(void* ctx);
 
-void TE_exe(TE_TaskFn fn, void* ctx, int64_t* done);
+bool TE_exe(TE_TaskFn fn, void* ctx, int64_t* done);
 
 
 

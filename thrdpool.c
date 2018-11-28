@@ -50,9 +50,7 @@ static s32 TE_thrdPool_worker(TE_ThrdPool* pool)
                 break;
             }
 
-            task.fn = pool->queue[pool->head].fn;
-            task.ctx = pool->queue[pool->head].ctx;
-            task.done  = pool->queue[pool->head].done;
+            task = pool->queue[pool->head];
             pool->head = (pool->head + 1) % TE_ThrdPool_QueueSize;
         }
         mtx_unlock(&pool->lock);
@@ -140,7 +138,7 @@ void TE_thrdPool_free(TE_ThrdPool* pool)
 
 
 
-void TE_thrdPool_add(TE_ThrdPool* pool, TE_TaskFn fn, void* ctx, int64_t* done)
+bool TE_thrdPool_add(TE_ThrdPool* pool, TE_TaskFn fn, void* ctx, int64_t* done)
 {
     mtx_lock(&pool->lock);
 
@@ -151,17 +149,24 @@ void TE_thrdPool_add(TE_ThrdPool* pool, TE_TaskFn fn, void* ctx, int64_t* done)
     if (pool->shutdown)
     {
         mtx_unlock(&pool->lock);
-        return;
+        return false;
+    }
+    s32 tail1 = (pool->tail + 1) % TE_ThrdPool_QueueSize;
+    if (tail1 == pool->head)
+    {
+        mtx_unlock(&pool->lock);
+        return false;
     }
 
     pool->queue[pool->tail].fn = fn;
     pool->queue[pool->tail].ctx = ctx;
     pool->queue[pool->tail].done = done;
-    pool->tail = (pool->tail + 1) % TE_ThrdPool_QueueSize;
+    pool->tail = tail1;
 
     cnd_signal(&pool->notify);
 
     mtx_unlock(&pool->lock);
+    return true;
 }
 
 

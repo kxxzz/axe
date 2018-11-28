@@ -36,9 +36,9 @@ void TE_deinit(void)
 }
 
 
-void TE_exe(TE_TaskFn fn, void* ctx, int64_t* done)
+bool TE_exe(TE_TaskFn fn, void* ctx, int64_t* done)
 {
-    TE_thrdPool_add(s_thrdPool, fn, ctx, done);
+    return TE_thrdPool_add(s_thrdPool, fn, ctx, done);
 }
 
 
