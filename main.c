@@ -15,6 +15,13 @@
 
 
 
+#ifdef ARYLEN
+# undef ARYLEN
+#endif
+#define ARYLEN(a) (sizeof(a) / sizeof((a)[0]))
+
+
+
 void taskFn(int64_t* count)
 {
     atomic_inc(count);

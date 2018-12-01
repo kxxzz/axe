@@ -23,10 +23,6 @@ typedef double f64;
 
 
 
-#define ARYLEN(a) (sizeof(a) / sizeof((a)[0]))
-
-
-
 
 void texe_init(void);
 void texe_deinit(void);
