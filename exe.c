@@ -4,7 +4,7 @@
 
 
 
-static TE_ThrdPool* s_thrdPool;
+static texe_ThrdPool* s_thrdPool;
 
 
 
@@ -20,25 +20,25 @@ static u32 getNumCores(void)
 }
 
 
-void TE_init(void)
+void texe_init(void)
 {
     assert(!s_thrdPool);
     u32 n = getNumCores();
-    s_thrdPool = TE_new_thrdPool(n * 2);
+    s_thrdPool = texe_new_thrdPool(n * 2);
 }
 
 
-void TE_deinit(void)
+void texe_deinit(void)
 {
     assert(s_thrdPool);
-    TE_thrdPool_free(s_thrdPool);
+    texe_thrdPool_free(s_thrdPool);
     s_thrdPool = NULL;
 }
 
 
-bool TE_exe(TE_TaskFn fn, void* ctx, int64_t* done)
+bool texe_exe(texe_TaskFn fn, void* ctx, int64_t* done)
 {
-    return TE_thrdPool_add(s_thrdPool, fn, ctx, done);
+    return texe_thrdPool_add(s_thrdPool, fn, ctx, done);
 }
 
 

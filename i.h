@@ -28,14 +28,14 @@ typedef double f64;
 
 
 
-void TE_init(void);
-void TE_deinit(void);
+void texe_init(void);
+void texe_deinit(void);
 
 
 
-typedef void(*TE_TaskFn)(void* ctx);
+typedef void(*texe_TaskFn)(void* ctx);
 
-bool TE_exe(TE_TaskFn fn, void* ctx, int64_t* done);
+bool texe_exe(texe_TaskFn fn, void* ctx, int64_t* done);
 
 
 

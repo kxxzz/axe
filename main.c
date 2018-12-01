@@ -22,16 +22,16 @@ void taskFn(int64_t* count)
 
 static void test(void)
 {
-    TE_init();
+    texe_init();
     static int64_t count = 0;
     static int64_t done[1024 - 1] = { 0 };
     for (u32 i = 0; i < ARYLEN(done); ++i)
     {
-        bool ok = TE_exe(taskFn, &count, done + i);
+        bool ok = texe_exe(taskFn, &count, done + i);
         assert(ok);
     }
     while (atomic_get(&count) < ARYLEN(done));
-    TE_deinit();
+    texe_deinit();
     assert(ARYLEN(done) == atomic_get(&count));
     for (u32 i = 0; i < ARYLEN(done); ++i)
     {
