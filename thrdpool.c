@@ -56,7 +56,10 @@ static s32 texe_thrdPool_worker(texe_ThrdPool* pool)
         mtx_unlock(&pool->lock);
 
         task.fn(task.ctx);
-        atomic_set(task.done, 1);
+        if (done)
+        {
+            atomic_set(task.done, 1);
+        }
     }
     return thrd_success;
 }
