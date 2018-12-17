@@ -3,7 +3,6 @@
 
 
 
-
 static texe_ThrdPool* s_thrdPool;
 
 
@@ -25,6 +24,7 @@ void texe_init(void)
     assert(!s_thrdPool);
     u32 n = getNumCores();
     s_thrdPool = texe_new_thrdPool(n * 2);
+    assert(s_thrdPool);
 }
 
 
@@ -38,6 +38,7 @@ void texe_deinit(void)
 
 bool texe_exe(texe_TaskFn fn, void* ctx, int64_t* done)
 {
+    assert(s_thrdPool);
     return texe_thrdPool_add(s_thrdPool, fn, ctx, done);
 }
 

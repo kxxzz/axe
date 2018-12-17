@@ -25,6 +25,7 @@
 
 #include <time.h>
 #include <string.h>
+#include <stdio.h>
 #include <atomic.h>
 #include <sleep.h>
 #include <threads.h>
