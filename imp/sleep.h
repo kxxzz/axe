@@ -5,6 +5,13 @@
 # include <Windows.h>
 #endif
 
+#ifdef __EMSCRIPTEN__
+# define HAVE_PTHREAD
+# define HAVE_TIMESPEC_GET
+#endif
+
+#include <time.h>
+
 
 static void sleep_ns(double ns)
 {

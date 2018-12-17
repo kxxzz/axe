@@ -17,19 +17,17 @@
 # pragma warning (disable : 4305)
 #endif
 
-
-
-#include <atomic.h>
-#include <sleep.h>
-
-
-
 #ifdef __EMSCRIPTEN__
 # define HAVE_PTHREAD
 # define HAVE_TIMESPEC_GET
 #endif
-#include <threads.h>
 
+
+#include <time.h>
+#include <string.h>
+#include <atomic.h>
+#include <sleep.h>
+#include <threads.h>
 
 #include "thrdpool.h"
 
