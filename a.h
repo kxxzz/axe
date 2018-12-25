@@ -34,8 +34,7 @@
 
 
 
-
-void* zalloc(size_t size);
+#define zalloc(sz) calloc(1, sz)
 
 
 

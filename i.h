@@ -24,7 +24,7 @@ typedef double f64;
 
 
 
-void texe_init(void);
+void texe_init(u32 n);
 void texe_deinit(void);
 
 

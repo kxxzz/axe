@@ -19,11 +19,18 @@ static u32 getNumCores(void)
 }
 
 
-void texe_init(void)
+void texe_init(u32 n)
 {
     assert(!s_thrdPool);
-    u32 n = getNumCores();
-    s_thrdPool = texe_new_thrdPool(n * 2);
+    if (!n)
+    {
+        u32 n = getNumCores();
+        s_thrdPool = texe_new_thrdPool(n * 2);
+    }
+    else
+    {
+        s_thrdPool = texe_new_thrdPool(n);
+    }
     assert(s_thrdPool);
 }
 
