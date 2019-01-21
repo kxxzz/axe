@@ -4,38 +4,38 @@
 
 enum
 {
-    texe_ThrdPool_QueueSize = 1024,
+    TEXE_ThrdPool_QueueSize = 1024,
 };
 
 
 
-typedef struct texe_ThrdTask
+typedef struct TEXE_ThrdTask
 {
-    texe_TaskFn fn;
+    TEXE_TaskFn fn;
     void* ctx;
     int64_t* done;
-} texe_ThrdTask;
+} TEXE_ThrdTask;
 
 
 
-typedef struct texe_ThrdPool
+typedef struct TEXE_ThrdPool
 {
     mtx_t lock;
     cnd_t notify;
     thrd_t* threads;
     u32 threadCount;
-    texe_ThrdTask* queue;
+    TEXE_ThrdTask* queue;
     s32 head;
     s32 tail;
     bool shutdown;
-} texe_ThrdPool;
+} TEXE_ThrdPool;
 
 
 
 
-static s32 texe_thrdPool_worker(texe_ThrdPool* pool)
+static s32 TEXE_thrdPool_worker(TEXE_ThrdPool* pool)
 {
-    texe_ThrdTask task;
+    TEXE_ThrdTask task;
     for (;;)
     {
         mtx_lock(&pool->lock);
@@ -51,7 +51,7 @@ static s32 texe_thrdPool_worker(texe_ThrdPool* pool)
             }
 
             task = pool->queue[pool->head];
-            pool->head = (pool->head + 1) % texe_ThrdPool_QueueSize;
+            pool->head = (pool->head + 1) % TEXE_ThrdPool_QueueSize;
         }
         mtx_unlock(&pool->lock);
 
@@ -67,13 +67,13 @@ static s32 texe_thrdPool_worker(texe_ThrdPool* pool)
 
 
 
-texe_ThrdPool* texe_new_thrdPool(u32 threadCount)
+TEXE_ThrdPool* TEXE_new_thrdPool(u32 threadCount)
 {
-    texe_ThrdPool* pool = zalloc(sizeof(texe_ThrdPool));
+    TEXE_ThrdPool* pool = zalloc(sizeof(TEXE_ThrdPool));
 
     pool->threadCount = threadCount;
     pool->threads = zalloc(sizeof(thrd_t)*pool->threadCount);
-    pool->queue = zalloc(sizeof(texe_ThrdTask)*texe_ThrdPool_QueueSize);
+    pool->queue = zalloc(sizeof(TEXE_ThrdTask)*TEXE_ThrdPool_QueueSize);
     pool->head = 0;
     pool->tail = 0;
     pool->shutdown = false;
@@ -97,7 +97,7 @@ texe_ThrdPool* texe_new_thrdPool(u32 threadCount)
 
     for (u32 i = 0; i < pool->threadCount; ++i)
     {
-        if (thrd_create(&pool->threads[i], (thrd_start_t)texe_thrdPool_worker, pool) != thrd_success)
+        if (thrd_create(&pool->threads[i], (thrd_start_t)TEXE_thrdPool_worker, pool) != thrd_success)
         {
             free(pool->queue);
             free(pool->threads);
@@ -115,7 +115,7 @@ texe_ThrdPool* texe_new_thrdPool(u32 threadCount)
 
 
 
-void texe_thrdPool_free(texe_ThrdPool* pool)
+void TEXE_thrdPool_free(TEXE_ThrdPool* pool)
 {
     mtx_lock(&pool->lock);
     {
@@ -141,11 +141,11 @@ void texe_thrdPool_free(texe_ThrdPool* pool)
 
 
 
-bool texe_thrdPool_add(texe_ThrdPool* pool, texe_TaskFn fn, void* ctx, int64_t* done)
+bool TEXE_thrdPool_add(TEXE_ThrdPool* pool, TEXE_TaskFn fn, void* ctx, int64_t* done)
 {
     mtx_lock(&pool->lock);
 
-    while ((pool->tail - pool->head == texe_ThrdPool_QueueSize) && !pool->shutdown)
+    while ((pool->tail - pool->head == TEXE_ThrdPool_QueueSize) && !pool->shutdown)
     {
         cnd_wait(&pool->notify, &pool->lock);
     }
@@ -154,7 +154,7 @@ bool texe_thrdPool_add(texe_ThrdPool* pool, texe_TaskFn fn, void* ctx, int64_t* 
         mtx_unlock(&pool->lock);
         return false;
     }
-    s32 tail1 = (pool->tail + 1) % texe_ThrdPool_QueueSize;
+    s32 tail1 = (pool->tail + 1) % TEXE_ThrdPool_QueueSize;
     if (tail1 == pool->head)
     {
         mtx_unlock(&pool->lock);

@@ -2,11 +2,11 @@
 
 
 
-typedef struct texe_ThrdPool texe_ThrdPool;
+typedef struct TEXE_ThrdPool TEXE_ThrdPool;
 
-texe_ThrdPool* texe_new_thrdPool(u32 threadCount);
-void texe_thrdPool_free(texe_ThrdPool* pool);
-bool texe_thrdPool_add(texe_ThrdPool* pool, texe_TaskFn fn, void* ctx, int64_t* done);
+TEXE_ThrdPool* TEXE_new_thrdPool(u32 threadCount);
+void TEXE_thrdPool_free(TEXE_ThrdPool* pool);
+bool TEXE_thrdPool_add(TEXE_ThrdPool* pool, TEXE_TaskFn fn, void* ctx, int64_t* done);
 
 
 
