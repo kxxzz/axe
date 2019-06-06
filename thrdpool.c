@@ -20,8 +20,8 @@ typedef struct TEXE_ThrdTask
 
 typedef struct TEXE_ThrdPool
 {
-    mtx_t lock;
-    cnd_t notify;
+    mtx_t lock[1];
+    cnd_t notify[1];
     thrd_t* threads;
     u32 threadCount;
     TEXE_ThrdTask* queue;
@@ -38,22 +38,22 @@ static s32 TEXE_thrdPool_worker(TEXE_ThrdPool* pool)
     TEXE_ThrdTask task;
     for (;;)
     {
-        mtx_lock(&pool->lock);
+        mtx_lock(pool->lock);
         {
             while ((pool->tail == pool->head) && !pool->shutdown)
             {
-                cnd_wait(&pool->notify, &pool->lock);
+                cnd_wait(pool->notify, pool->lock);
             }
             if (pool->shutdown)
             {
-                mtx_unlock(&pool->lock);
+                mtx_unlock(pool->lock);
                 break;
             }
 
             task = pool->queue[pool->head];
             pool->head = (pool->head + 1) % TEXE_ThrdPool_QueueSize;
         }
-        mtx_unlock(&pool->lock);
+        mtx_unlock(pool->lock);
 
         task.fn(task.ctx);
         if (task.done)
@@ -78,19 +78,19 @@ TEXE_ThrdPool* TEXE_new_thrdPool(u32 threadCount)
     pool->tail = 0;
     pool->shutdown = false;
 
-    if (mtx_init(&pool->lock, mtx_plain) != thrd_success)
+    if (mtx_init(pool->lock, mtx_plain) != thrd_success)
     {
         free(pool->queue);
         free(pool->threads);
         free(pool);
         return NULL;
     }
-    if (cnd_init(&pool->notify) != thrd_success)
+    if (cnd_init(pool->notify) != thrd_success)
     {
         free(pool->queue);
         free(pool->threads);
-        mtx_lock(&pool->lock);
-        mtx_destroy(&pool->lock);
+        mtx_lock(pool->lock);
+        mtx_destroy(pool->lock);
         free(pool);
         return NULL;
     }
@@ -101,9 +101,9 @@ TEXE_ThrdPool* TEXE_new_thrdPool(u32 threadCount)
         {
             free(pool->queue);
             free(pool->threads);
-            mtx_lock(&pool->lock);
-            mtx_destroy(&pool->lock);
-            cnd_destroy(&pool->notify);
+            mtx_lock(pool->lock);
+            mtx_destroy(pool->lock);
+            cnd_destroy(pool->notify);
             free(pool);
             return NULL;
         }
@@ -117,12 +117,12 @@ TEXE_ThrdPool* TEXE_new_thrdPool(u32 threadCount)
 
 void TEXE_thrdPool_free(TEXE_ThrdPool* pool)
 {
-    mtx_lock(&pool->lock);
+    mtx_lock(pool->lock);
     {
         pool->shutdown = true;
-        cnd_broadcast(&pool->notify);
+        cnd_broadcast(pool->notify);
     }
-    mtx_unlock(&pool->lock);
+    mtx_unlock(pool->lock);
     for (u32 i = 0; i < pool->threadCount; ++i)
     {
         s32 r = thrd_join(pool->threads[i], NULL);
@@ -131,9 +131,9 @@ void TEXE_thrdPool_free(TEXE_ThrdPool* pool)
 
     free(pool->queue);
     free(pool->threads);
-    mtx_lock(&pool->lock);
-    mtx_destroy(&pool->lock);
-    cnd_destroy(&pool->notify);
+    mtx_lock(pool->lock);
+    mtx_destroy(pool->lock);
+    cnd_destroy(pool->notify);
     free(pool);
 }
 
@@ -143,21 +143,21 @@ void TEXE_thrdPool_free(TEXE_ThrdPool* pool)
 
 bool TEXE_thrdPool_add(TEXE_ThrdPool* pool, TEXE_TaskFn fn, void* ctx, int64_t* done)
 {
-    mtx_lock(&pool->lock);
+    mtx_lock(pool->lock);
 
     while ((pool->tail - pool->head == TEXE_ThrdPool_QueueSize) && !pool->shutdown)
     {
-        cnd_wait(&pool->notify, &pool->lock);
+        cnd_wait(pool->notify, pool->lock);
     }
     if (pool->shutdown)
     {
-        mtx_unlock(&pool->lock);
+        mtx_unlock(pool->lock);
         return false;
     }
     s32 tail1 = (pool->tail + 1) % TEXE_ThrdPool_QueueSize;
     if (tail1 == pool->head)
     {
-        mtx_unlock(&pool->lock);
+        mtx_unlock(pool->lock);
         return false;
     }
 
@@ -166,9 +166,9 @@ bool TEXE_thrdPool_add(TEXE_ThrdPool* pool, TEXE_TaskFn fn, void* ctx, int64_t* 
     pool->queue[pool->tail].done = done;
     pool->tail = tail1;
 
-    cnd_signal(&pool->notify);
+    cnd_signal(pool->notify);
 
-    mtx_unlock(&pool->lock);
+    mtx_unlock(pool->lock);
     return true;
 }
 

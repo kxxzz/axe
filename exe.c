@@ -10,9 +10,9 @@ static TEXE_ThrdPool* s_thrdPool;
 static u32 getNumCores(void)
 {
 #if defined(_WIN32)
-    SYSTEM_INFO sysinfo;
-    GetSystemInfo(&sysinfo);
-    return sysinfo.dwNumberOfProcessors;
+    SYSTEM_INFO sysinfo[1];
+    GetSystemInfo(sysinfo);
+    return sysinfo->dwNumberOfProcessors;
 #else
     return sysconf(_SC_NPROCESSORS_ONLN);
 #endif
