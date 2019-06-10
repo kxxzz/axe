@@ -33,7 +33,7 @@ typedef struct TEXE_ThrdPool
 
 
 
-static s32 TEXE_thrdPool_worker(TEXE_ThrdPool* pool)
+static s32 TEXE_thrdPoolWorker(TEXE_ThrdPool* pool)
 {
     TEXE_ThrdTask task;
     for (;;)
@@ -67,7 +67,7 @@ static s32 TEXE_thrdPool_worker(TEXE_ThrdPool* pool)
 
 
 
-TEXE_ThrdPool* TEXE_new_thrdPool(u32 threadCount)
+TEXE_ThrdPool* TEXE_thrdPoolNew(u32 threadCount)
 {
     TEXE_ThrdPool* pool = zalloc(sizeof(TEXE_ThrdPool));
 
@@ -97,7 +97,7 @@ TEXE_ThrdPool* TEXE_new_thrdPool(u32 threadCount)
 
     for (u32 i = 0; i < pool->threadCount; ++i)
     {
-        if (thrd_create(&pool->threads[i], (thrd_start_t)TEXE_thrdPool_worker, pool) != thrd_success)
+        if (thrd_create(&pool->threads[i], (thrd_start_t)TEXE_thrdPoolWorker, pool) != thrd_success)
         {
             free(pool->queue);
             free(pool->threads);
@@ -115,7 +115,7 @@ TEXE_ThrdPool* TEXE_new_thrdPool(u32 threadCount)
 
 
 
-void TEXE_thrdPool_free(TEXE_ThrdPool* pool)
+void TEXE_thrdPoolFree(TEXE_ThrdPool* pool)
 {
     mtx_lock(pool->lock);
     {
@@ -141,7 +141,7 @@ void TEXE_thrdPool_free(TEXE_ThrdPool* pool)
 
 
 
-bool TEXE_thrdPool_add(TEXE_ThrdPool* pool, TEXE_TaskFn fn, void* ctx, int64_t* done)
+bool TEXE_thrdPoolAdd(TEXE_ThrdPool* pool, TEXE_TaskFn fn, void* ctx, int64_t* done)
 {
     mtx_lock(pool->lock);
 
