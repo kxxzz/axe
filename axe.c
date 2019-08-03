@@ -1,9 +1,9 @@
-#include "texe_a.h"
+#include "axe_a.h"
 
 
 
 
-static TEXE_ThrdPool* s_thrdPool;
+static AXE_ThrdPool* s_thrdPool;
 
 
 
@@ -19,34 +19,34 @@ static u32 getNumCores(void)
 }
 
 
-void TEXE_init(u32 n)
+void AXE_init(u32 n)
 {
     assert(!s_thrdPool);
     if (!n)
     {
         u32 n = getNumCores();
-        s_thrdPool = TEXE_thrdPoolNew(n * 2);
+        s_thrdPool = AXE_thrdPoolNew(n * 2);
     }
     else
     {
-        s_thrdPool = TEXE_thrdPoolNew(n);
+        s_thrdPool = AXE_thrdPoolNew(n);
     }
     assert(s_thrdPool);
 }
 
 
-void TEXE_deinit(void)
+void AXE_deinit(void)
 {
     assert(s_thrdPool);
-    TEXE_thrdPoolFree(s_thrdPool);
+    AXE_thrdPoolFree(s_thrdPool);
     s_thrdPool = NULL;
 }
 
 
-bool TEXE_exe(TEXE_TaskFn fn, void* ctx, int64_t* done)
+bool AXE_exe(AXE_TaskFn fn, void* ctx, int64_t* done)
 {
     assert(s_thrdPool);
-    return TEXE_thrdPoolAdd(s_thrdPool, fn, ctx, done);
+    return AXE_thrdPoolAdd(s_thrdPool, fn, ctx, done);
 }
 
 

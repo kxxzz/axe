@@ -11,7 +11,7 @@
 #include <atomic.h>
 #include <sleep.h>
 
-#include "texe.h"
+#include "axe.h"
 
 
 
@@ -29,16 +29,16 @@ void taskFn(int64_t* count)
 
 static void test(void)
 {
-    TEXE_init(0);
+    AXE_init(0);
     static int64_t count[1] = { 0 };
     static int64_t done[1024 - 1] = { 0 };
     for (u32 i = 0; i < ARYLEN(done); ++i)
     {
-        bool ok = TEXE_exe(taskFn, count, done + i);
+        bool ok = AXE_exe(taskFn, count, done + i);
         assert(ok);
     }
     while (atomic_get(count) < ARYLEN(done));
-    TEXE_deinit();
+    AXE_deinit();
     assert(ARYLEN(done) == atomic_get(count));
     for (u32 i = 0; i < ARYLEN(done); ++i)
     {

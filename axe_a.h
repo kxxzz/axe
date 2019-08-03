@@ -2,7 +2,7 @@
 
 
 
-#include "texe.h"
+#include "axe.h"
 
 
 
@@ -30,7 +30,7 @@
 #include <sleep.h>
 #include <threads.h>
 
-#include "texe_thrdpool.h"
+#include "axe_thrdpool.h"
 
 
 
