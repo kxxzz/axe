@@ -2,7 +2,7 @@
 
 
 
-#include "i.h"
+#include "texe.h"
 
 
 
@@ -30,7 +30,7 @@
 #include <sleep.h>
 #include <threads.h>
 
-#include "thrdpool.h"
+#include "texe_thrdpool.h"
 
 
 
